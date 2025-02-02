@@ -3,6 +3,7 @@ import { TaskItem } from "./TaskItem";
 import { AddTaskForm } from "./AddTaskForm";
 import { TaskFilter } from "./TaskFilter";
 import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Task {
   id: string;
@@ -10,12 +11,14 @@ interface Task {
   completed: boolean;
   priority: "low" | "medium" | "high";
   dueDate?: Date;
+  progress: "not_started" | "in_progress" | "completed";
 }
 
 export const TaskList = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
   const { toast } = useToast();
+  const { isAdmin } = useAuth();
 
   const addTask = (newTask: {
     title: string;
@@ -25,6 +28,7 @@ export const TaskList = () => {
     const task: Task = {
       id: Math.random().toString(36).substr(2, 9),
       completed: false,
+      progress: "not_started",
       ...newTask,
     };
     setTasks((prev) => [task, ...prev]);
@@ -43,6 +47,7 @@ export const TaskList = () => {
   };
 
   const deleteTask = (id: string) => {
+    if (!isAdmin) return;
     setTasks((prev) => prev.filter((task) => task.id !== id));
     toast({
       title: "Task deleted",
@@ -50,18 +55,30 @@ export const TaskList = () => {
     });
   };
 
+  const updateProgress = (id: string, progress: "not_started" | "in_progress" | "completed") => {
+    setTasks((prev) =>
+      prev.map((task) =>
+        task.id === id ? { ...task, progress } : task
+      )
+    );
+    toast({
+      title: "Progress updated",
+      description: "Task progress has been updated successfully.",
+    });
+  };
+
   const filteredTasks = tasks.filter((task) => {
-    if (filter === "active") return !task.completed;
-    if (filter === "completed") return task.completed;
+    if (filter === "active") return task.progress !== "completed";
+    if (filter === "completed") return task.progress === "completed";
     return true;
   });
 
   return (
     <div className="mx-auto max-w-2xl p-6">
-      <h1 className="mb-8 text-center text-3xl font-bold text-gray-900">
+      <h2 className="mb-8 text-center text-2xl font-bold text-gray-900">
         Task Scheduler
-      </h1>
-      <AddTaskForm onAdd={addTask} />
+      </h2>
+      {isAdmin && <AddTaskForm onAdd={addTask} />}
       <TaskFilter filter={filter} onFilterChange={setFilter} />
       <div className="space-y-4">
         {filteredTasks.map((task) => (
@@ -70,6 +87,7 @@ export const TaskList = () => {
             {...task}
             onComplete={toggleComplete}
             onDelete={deleteTask}
+            onProgressUpdate={updateProgress}
           />
         ))}
         {filteredTasks.length === 0 && (
