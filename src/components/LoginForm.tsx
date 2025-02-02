@@ -26,31 +26,34 @@ export const LoginForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-sm mx-auto">
-      <div>
-        <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="Username"
-          className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-        />
-      </div>
-      <div>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-        />
-      </div>
-      <button
-        type="submit"
-        className="w-full rounded-lg bg-primary px-4 py-2 text-white transition-colors hover:bg-primary-hover"
-      >
-        Login
-      </button>
-    </form>
+    <div className="max-w-sm mx-auto mt-8">
+      <h2 className="text-xl font-bold mb-4 text-center">Login to Access Task Scheduler</h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Username"
+            className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+          />
+        </div>
+        <div>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+          />
+        </div>
+        <button
+          type="submit"
+          className="w-full rounded-lg bg-primary px-4 py-2 text-white transition-colors hover:bg-primary-hover"
+        >
+          Login
+        </button>
+      </form>
+    </div>
   );
 };
