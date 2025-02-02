@@ -2,97 +2,34 @@ import { useState } from "react";
 import { TaskItem } from "./TaskItem";
 import { AddTaskForm } from "./AddTaskForm";
 import { TaskFilter } from "./TaskFilter";
-import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 
-interface Task {
-  id: string;
-  title: string;
-  completed: boolean;
-  priority: "low" | "medium" | "high";
-  dueDate?: Date;
-  progress: "not_started" | "in_progress" | "completed";
-}
-
 export const TaskList = () => {
-  const [tasks, setTasks] = useState<Task[]>([]);
   const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
-  const { toast } = useToast();
   const { isAdmin } = useAuth();
 
-  const addTask = (newTask: {
-    title: string;
-    priority: "low" | "medium" | "high";
-    dueDate?: Date;
-  }) => {
-    const task: Task = {
-      id: Math.random().toString(36).substr(2, 9),
-      completed: false,
-      progress: "not_started",
-      ...newTask,
-    };
-    setTasks((prev) => [task, ...prev]);
-    toast({
-      title: "Task added",
-      description: "Your new task has been added successfully.",
-    });
-  };
-
-  const toggleComplete = (id: string) => {
-    setTasks((prev) =>
-      prev.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task
-      )
-    );
-  };
-
-  const deleteTask = (id: string) => {
-    if (!isAdmin) return;
-    setTasks((prev) => prev.filter((task) => task.id !== id));
-    toast({
-      title: "Task deleted",
-      description: "The task has been deleted successfully.",
-    });
-  };
-
-  const updateProgress = (id: string, progress: "not_started" | "in_progress" | "completed") => {
-    setTasks((prev) =>
-      prev.map((task) =>
-        task.id === id ? { ...task, progress } : task
-      )
-    );
-    toast({
-      title: "Progress updated",
-      description: "Task progress has been updated successfully.",
-    });
-  };
+  const tasks = [
+    { id: 1, title: "Task 1", completed: false },
+    { id: 2, title: "Task 2", completed: true },
+    { id: 3, title: "Task 3", completed: false },
+  ];
 
   const filteredTasks = tasks.filter((task) => {
-    if (filter === "active") return task.progress !== "completed";
-    if (filter === "completed") return task.progress === "completed";
+    if (filter === "active") return !task.completed;
+    if (filter === "completed") return task.completed;
     return true;
   });
 
   return (
-    <div className="mx-auto max-w-2xl p-6">
-      <h2 className="mb-8 text-center text-2xl font-bold text-gray-900">
-        Task Scheduler
-      </h2>
-      {isAdmin && <AddTaskForm onAdd={addTask} />}
-      <TaskFilter filter={filter} onFilterChange={setFilter} />
+    <div className="max-w-2xl mx-auto">
+      {isAdmin && <AddTaskForm />}
+      {isAdmin && (
+        <TaskFilter filter={filter} onFilterChange={setFilter} />
+      )}
       <div className="space-y-4">
         {filteredTasks.map((task) => (
-          <TaskItem
-            key={task.id}
-            {...task}
-            onComplete={toggleComplete}
-            onDelete={deleteTask}
-            onProgressUpdate={updateProgress}
-          />
+          <TaskItem key={task.id} task={task} />
         ))}
-        {filteredTasks.length === 0 && (
-          <p className="text-center text-gray-500">No tasks found.</p>
-        )}
       </div>
     </div>
   );
