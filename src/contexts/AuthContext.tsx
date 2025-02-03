@@ -15,8 +15,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (username === 'admin' && password === 'admin') {
       setIsAdmin(true);
       return true;
+    } else if (username === 'sandeep' && password === 'sandeep') {
+      setIsAdmin(false);
+      return true;
     }
-    setIsAdmin(false);
     return false;
   };
 

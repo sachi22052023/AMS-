@@ -6,6 +6,7 @@ interface AddTaskFormProps {
     title: string;
     priority: "low" | "medium" | "high";
     dueDate?: Date;
+    teamInvolvement?: string;
   }) => void;
 }
 
@@ -13,6 +14,7 @@ export const AddTaskForm = ({ onAdd }: AddTaskFormProps) => {
   const [title, setTitle] = useState("");
   const [priority, setPriority] = useState<"low" | "medium" | "high">("medium");
   const [dueDate, setDueDate] = useState("");
+  const [teamInvolvement, setTeamInvolvement] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,11 +24,13 @@ export const AddTaskForm = ({ onAdd }: AddTaskFormProps) => {
       title: title.trim(),
       priority,
       dueDate: dueDate ? new Date(dueDate) : undefined,
+      teamInvolvement: teamInvolvement.trim(),
     });
 
     setTitle("");
     setPriority("medium");
     setDueDate("");
+    setTeamInvolvement("");
   };
 
   return (
@@ -47,7 +51,7 @@ export const AddTaskForm = ({ onAdd }: AddTaskFormProps) => {
           Add Task
         </button>
       </div>
-      <div className="flex gap-4">
+      <div className="grid grid-cols-2 gap-4">
         <select
           value={priority}
           onChange={(e) => setPriority(e.target.value as "low" | "medium" | "high")}
@@ -61,6 +65,13 @@ export const AddTaskForm = ({ onAdd }: AddTaskFormProps) => {
           type="date"
           value={dueDate}
           onChange={(e) => setDueDate(e.target.value)}
+          className="rounded-lg border border-gray-300 px-4 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+        />
+        <input
+          type="text"
+          value={teamInvolvement}
+          onChange={(e) => setTeamInvolvement(e.target.value)}
+          placeholder="Team members involved..."
           className="rounded-lg border border-gray-300 px-4 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
         />
       </div>

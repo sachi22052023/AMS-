@@ -12,6 +12,8 @@ interface Task {
   priority: "low" | "medium" | "high";
   dueDate?: Date;
   progress: "not_started" | "in_progress" | "completed";
+  actionPlanUrl?: string;
+  teamInvolvement?: string;
 }
 
 export const TaskList = () => {
@@ -24,6 +26,7 @@ export const TaskList = () => {
     title: string;
     priority: "low" | "medium" | "high";
     dueDate?: Date;
+    teamInvolvement?: string;
   }) => {
     const task: Task = {
       id: Math.random().toString(36).substr(2, 9),
@@ -35,6 +38,21 @@ export const TaskList = () => {
     toast({
       title: "Task added",
       description: "Your new task has been added successfully.",
+    });
+  };
+
+  const handleFileUpload = async (id: string, file: File) => {
+    // In a real application, you would upload the file to a server
+    // For now, we'll create a temporary URL
+    const url = URL.createObjectURL(file);
+    setTasks((prev) =>
+      prev.map((task) =>
+        task.id === id ? { ...task, actionPlanUrl: url } : task
+      )
+    );
+    toast({
+      title: "File uploaded",
+      description: "Action plan has been uploaded successfully.",
     });
   };
 
@@ -88,6 +106,7 @@ export const TaskList = () => {
             onComplete={toggleComplete}
             onDelete={deleteTask}
             onProgressUpdate={updateProgress}
+            onFileUpload={isAdmin ? handleFileUpload : undefined}
           />
         ))}
         {filteredTasks.length === 0 && (
