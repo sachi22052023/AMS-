@@ -42,8 +42,6 @@ export const TaskList = () => {
   };
 
   const handleFileUpload = async (id: string, file: File) => {
-    // In a real application, you would upload the file to a server
-    // For now, we'll create a temporary URL
     const url = URL.createObjectURL(file);
     setTasks((prev) =>
       prev.map((task) =>
