@@ -34,20 +34,34 @@ export const TaskList = () => {
       progress: "not_started",
       ...newTask,
     };
-    setTasks((prev) => [task, ...prev]);
+    
+    // Store tasks in localStorage to persist between sessions and users
+    const updatedTasks = [task, ...tasks];
+    setTasks(updatedTasks);
+    localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+    
     toast({
       title: "Task added",
       description: "Your new task has been added successfully.",
     });
   };
 
+  // Load tasks from localStorage when component mounts
+  useState(() => {
+    const storedTasks = localStorage.getItem('tasks');
+    if (storedTasks) {
+      setTasks(JSON.parse(storedTasks));
+    }
+  });
+
   const handleFileUpload = async (id: string, file: File) => {
     const url = URL.createObjectURL(file);
-    setTasks((prev) =>
-      prev.map((task) =>
-        task.id === id ? { ...task, actionPlanUrl: url } : task
-      )
+    const updatedTasks = tasks.map((task) =>
+      task.id === id ? { ...task, actionPlanUrl: url } : task
     );
+    setTasks(updatedTasks);
+    localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+    
     toast({
       title: "File uploaded",
       description: "Action plan has been uploaded successfully.",
@@ -55,16 +69,19 @@ export const TaskList = () => {
   };
 
   const toggleComplete = (id: string) => {
-    setTasks((prev) =>
-      prev.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task
-      )
+    const updatedTasks = tasks.map((task) =>
+      task.id === id ? { ...task, completed: !task.completed } : task
     );
+    setTasks(updatedTasks);
+    localStorage.setItem('tasks', JSON.stringify(updatedTasks));
   };
 
   const deleteTask = (id: string) => {
     if (!isAdmin) return;
-    setTasks((prev) => prev.filter((task) => task.id !== id));
+    const updatedTasks = tasks.filter((task) => task.id !== id);
+    setTasks(updatedTasks);
+    localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+    
     toast({
       title: "Task deleted",
       description: "The task has been deleted successfully.",
@@ -72,11 +89,12 @@ export const TaskList = () => {
   };
 
   const updateProgress = (id: string, progress: "not_started" | "in_progress" | "completed") => {
-    setTasks((prev) =>
-      prev.map((task) =>
-        task.id === id ? { ...task, progress } : task
-      )
+    const updatedTasks = tasks.map((task) =>
+      task.id === id ? { ...task, progress } : task
     );
+    setTasks(updatedTasks);
+    localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+    
     toast({
       title: "Progress updated",
       description: "Task progress has been updated successfully.",
