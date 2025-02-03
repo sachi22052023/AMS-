@@ -79,7 +79,7 @@ export const TaskList = () => {
         Task Scheduler
       </h2>
       {isAdmin && <AddTaskForm onAdd={addTask} />}
-      <TaskFilter filter={filter} onFilterChange={setFilter} />
+      {isAdmin && <TaskFilter filter={filter} onFilterChange={setFilter} />}
       <div className="space-y-4">
         {filteredTasks.map((task) => (
           <TaskItem
