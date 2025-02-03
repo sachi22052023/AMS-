@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TaskItem } from "./TaskItem";
 import { AddTaskForm } from "./AddTaskForm";
 import { TaskFilter } from "./TaskFilter";
@@ -22,6 +22,25 @@ export const TaskList = () => {
   const { toast } = useToast();
   const { isAdmin } = useAuth();
 
+  // Load tasks from localStorage when component mounts
+  useEffect(() => {
+    const storedTasks = localStorage.getItem('tasks');
+    if (storedTasks) {
+      try {
+        const parsedTasks = JSON.parse(storedTasks);
+        // Convert string dates back to Date objects
+        const tasksWithDates = parsedTasks.map((task: any) => ({
+          ...task,
+          dueDate: task.dueDate ? new Date(task.dueDate) : undefined
+        }));
+        setTasks(tasksWithDates);
+      } catch (error) {
+        console.error('Error loading tasks:', error);
+        setTasks([]);
+      }
+    }
+  }, []);
+
   const addTask = (newTask: {
     title: string;
     priority: "low" | "medium" | "high";
@@ -35,7 +54,6 @@ export const TaskList = () => {
       ...newTask,
     };
     
-    // Store tasks in localStorage to persist between sessions and users
     const updatedTasks = [task, ...tasks];
     setTasks(updatedTasks);
     localStorage.setItem('tasks', JSON.stringify(updatedTasks));
@@ -45,14 +63,6 @@ export const TaskList = () => {
       description: "Your new task has been added successfully.",
     });
   };
-
-  // Load tasks from localStorage when component mounts
-  useState(() => {
-    const storedTasks = localStorage.getItem('tasks');
-    if (storedTasks) {
-      setTasks(JSON.parse(storedTasks));
-    }
-  });
 
   const handleFileUpload = async (id: string, file: File) => {
     const url = URL.createObjectURL(file);
