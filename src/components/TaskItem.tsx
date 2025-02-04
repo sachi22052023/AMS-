@@ -8,8 +8,6 @@ interface TaskItemProps {
   completed: boolean;
   priority: "low" | "medium" | "high";
   dueDate?: Date;
-  startTime?: string;
-  endTime?: string;
   progress: "not_started" | "in_progress" | "completed";
   actionPlanUrl?: string;
   teamInvolvement?: string;
@@ -25,8 +23,6 @@ export const TaskItem = ({
   completed,
   priority,
   dueDate,
-  startTime,
-  endTime,
   progress,
   actionPlanUrl,
   teamInvolvement,
@@ -61,7 +57,7 @@ export const TaskItem = ({
       <div className="flex items-center justify-between">
         <div className="flex-1">
           <p className="text-sm font-medium">{title}</p>
-          <div className="mt-2 grid grid-cols-3 gap-2">
+          <div className="mt-2 grid grid-cols-2 gap-2">
             <div>
               <span className="text-xs text-gray-500">Priority:</span>
               <span className={cn(
@@ -85,14 +81,6 @@ export const TaskItem = ({
               <span className="ml-2 text-xs">
                 {dueDate ? dueDate.toLocaleDateString() : 'Not set'}
               </span>
-            </div>
-            <div>
-              <span className="text-xs text-gray-500">Start Time:</span>
-              <span className="ml-2 text-xs">{startTime || 'Not set'}</span>
-            </div>
-            <div>
-              <span className="text-xs text-gray-500">End Time:</span>
-              <span className="ml-2 text-xs">{endTime || 'Not set'}</span>
             </div>
             <div>
               <span className="text-xs text-gray-500">Team:</span>

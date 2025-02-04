@@ -20,7 +20,7 @@ const Index = () => {
           </button>
         )}
       </div>
-      <div className="w-full px-4">
+      <div className="container mx-auto px-4">
         {!isLoggedIn ? <LoginForm /> : <TaskList />}
       </div>
     </div>
