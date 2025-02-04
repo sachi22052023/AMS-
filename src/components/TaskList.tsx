@@ -12,6 +12,8 @@ interface Task {
   priority: "low" | "medium" | "high";
   scheduledStartDate?: Date;
   scheduledEndDate?: Date;
+  startTime?: string;
+  endTime?: string;
   progress: "not_started" | "in_progress" | "completed";
   actionPlanUrl?: string;
   teamInvolvement?: string;
@@ -20,6 +22,7 @@ interface Task {
 export const TaskList = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
+  const [progressFilter, setProgressFilter] = useState<"all" | "in_progress" | "completed">("all");
   const { toast } = useToast();
   const { isAdmin } = useAuth();
 
@@ -46,6 +49,8 @@ export const TaskList = () => {
     priority: "low" | "medium" | "high";
     scheduledStartDate?: Date;
     scheduledEndDate?: Date;
+    startTime?: string;
+    endTime?: string;
     teamInvolvement?: string;
   }) => {
     const task: Task = {
@@ -105,40 +110,72 @@ export const TaskList = () => {
     );
     setTasks(updatedTasks);
     localStorage.setItem('tasks', JSON.stringify(updatedTasks));
-    
-    toast({
-      title: "Progress updated",
-      description: "Task progress has been updated successfully.",
-    });
   };
 
   const filteredTasks = tasks.filter((task) => {
     if (filter === "active") return task.progress !== "completed";
     if (filter === "completed") return task.progress === "completed";
     return true;
+  }).filter((task) => {
+    if (progressFilter === "all") return true;
+    return task.progress === progressFilter;
   });
 
   return (
-    <div className="p-6">
-      <h2 className="mb-8 text-center text-2xl font-bold text-gray-900">
-        Task Scheduler
-      </h2>
-      {isAdmin && <AddTaskForm onAdd={addTask} />}
-      {isAdmin && <TaskFilter filter={filter} onFilterChange={setFilter} />}
-      <div className="space-y-4">
-        {filteredTasks.map((task) => (
-          <TaskItem
-            key={task.id}
-            {...task}
-            onComplete={toggleComplete}
-            onDelete={deleteTask}
-            onProgressUpdate={updateProgress}
-            onFileUpload={isAdmin ? handleFileUpload : undefined}
-          />
-        ))}
-        {filteredTasks.length === 0 && (
-          <p className="text-center text-gray-500">No tasks found.</p>
-        )}
+    <div className="flex min-h-screen">
+      {/* Left sidebar for progress filtering */}
+      <div className="w-64 bg-white p-4 shadow-sm">
+        <h3 className="mb-4 text-lg font-semibold">Filter by Progress</h3>
+        <div className="space-y-2">
+          <button
+            onClick={() => setProgressFilter("all")}
+            className={`w-full rounded-lg px-4 py-2 text-left ${
+              progressFilter === "all" ? "bg-primary text-white" : "hover:bg-gray-100"
+            }`}
+          >
+            All Tasks
+          </button>
+          <button
+            onClick={() => setProgressFilter("in_progress")}
+            className={`w-full rounded-lg px-4 py-2 text-left ${
+              progressFilter === "in_progress" ? "bg-primary text-white" : "hover:bg-gray-100"
+            }`}
+          >
+            In Progress
+          </button>
+          <button
+            onClick={() => setProgressFilter("completed")}
+            className={`w-full rounded-lg px-4 py-2 text-left ${
+              progressFilter === "completed" ? "bg-primary text-white" : "hover:bg-gray-100"
+            }`}
+          >
+            Completed
+          </button>
+        </div>
+      </div>
+
+      {/* Main content area */}
+      <div className="flex-1 p-6">
+        <h2 className="mb-8 text-center text-2xl font-bold text-gray-900">
+          Task Scheduler
+        </h2>
+        {isAdmin && <AddTaskForm onAdd={addTask} />}
+        {isAdmin && <TaskFilter filter={filter} onFilterChange={setFilter} />}
+        <div className="space-y-4">
+          {filteredTasks.map((task) => (
+            <TaskItem
+              key={task.id}
+              {...task}
+              onComplete={toggleComplete}
+              onDelete={deleteTask}
+              onProgressUpdate={updateProgress}
+              onFileUpload={isAdmin ? handleFileUpload : undefined}
+            />
+          ))}
+          {filteredTasks.length === 0 && (
+            <p className="text-center text-gray-500">No tasks found.</p>
+          )}
+        </div>
       </div>
     </div>
   );

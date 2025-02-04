@@ -1,6 +1,8 @@
-import { Check, Trash2, FileUp } from "lucide-react";
+import { Check, Trash2, FileUp, Save } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
+import { useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
 
 interface TaskItemProps {
   id: string;
@@ -9,6 +11,8 @@ interface TaskItemProps {
   priority: "low" | "medium" | "high";
   scheduledStartDate?: Date;
   scheduledEndDate?: Date;
+  startTime?: string;
+  endTime?: string;
   progress: "not_started" | "in_progress" | "completed";
   actionPlanUrl?: string;
   teamInvolvement?: string;
@@ -25,6 +29,8 @@ export const TaskItem = ({
   priority,
   scheduledStartDate,
   scheduledEndDate,
+  startTime,
+  endTime,
   progress,
   actionPlanUrl,
   teamInvolvement,
@@ -34,6 +40,8 @@ export const TaskItem = ({
   onFileUpload,
 }: TaskItemProps) => {
   const { isAdmin } = useAuth();
+  const { toast } = useToast();
+  const [currentProgress, setCurrentProgress] = useState(progress);
   
   const priorityColors = {
     low: "bg-green-100 text-green-800",
@@ -54,6 +62,14 @@ export const TaskItem = ({
     }
   };
 
+  const handleSaveProgress = () => {
+    onProgressUpdate(id, currentProgress);
+    toast({
+      title: "Progress updated",
+      description: "Task progress has been saved successfully.",
+    });
+  };
+
   return (
     <div className="animate-task-appear flex flex-col gap-4 rounded-lg border bg-white p-4 shadow-sm">
       <div className="flex items-center justify-between">
@@ -72,25 +88,34 @@ export const TaskItem = ({
             <div>
               <span className="text-xs text-gray-500">Status:</span>
               <select
-                value={progress}
-                onChange={(e) => onProgressUpdate(id, e.target.value as "not_started" | "in_progress" | "completed")}
+                value={currentProgress}
+                onChange={(e) => setCurrentProgress(e.target.value as "not_started" | "in_progress" | "completed")}
                 className="ml-2 rounded border border-gray-300 px-2 py-0.5 text-xs"
               >
                 <option value="not_started">Not Started</option>
                 <option value="in_progress">In Progress</option>
                 <option value="completed">Completed</option>
               </select>
+              <button
+                onClick={handleSaveProgress}
+                className="ml-2 inline-flex items-center rounded border border-gray-300 px-2 py-0.5 text-xs hover:bg-gray-50"
+              >
+                <Save className="mr-1 h-3 w-3" />
+                Save
+              </button>
             </div>
             <div>
-              <span className="text-xs text-gray-500">Scheduled Start:</span>
+              <span className="text-xs text-gray-500">Start:</span>
               <span className="ml-2 text-xs">
                 {scheduledStartDate ? scheduledStartDate.toLocaleDateString() : 'Not set'}
+                {startTime ? ` ${startTime}` : ''}
               </span>
             </div>
             <div>
-              <span className="text-xs text-gray-500">Scheduled End:</span>
+              <span className="text-xs text-gray-500">End:</span>
               <span className="ml-2 text-xs">
                 {scheduledEndDate ? scheduledEndDate.toLocaleDateString() : 'Not set'}
+                {endTime ? ` ${endTime}` : ''}
               </span>
             </div>
             <div>
