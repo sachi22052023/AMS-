@@ -10,7 +10,8 @@ interface Task {
   title: string;
   completed: boolean;
   priority: "low" | "medium" | "high";
-  dueDate?: Date;
+  scheduledStartDate?: Date;
+  scheduledEndDate?: Date;
   progress: "not_started" | "in_progress" | "completed";
   actionPlanUrl?: string;
   teamInvolvement?: string;
@@ -22,16 +23,15 @@ export const TaskList = () => {
   const { toast } = useToast();
   const { isAdmin } = useAuth();
 
-  // Load tasks from localStorage when component mounts
   useEffect(() => {
     const storedTasks = localStorage.getItem('tasks');
     if (storedTasks) {
       try {
         const parsedTasks = JSON.parse(storedTasks);
-        // Convert string dates back to Date objects
         const tasksWithDates = parsedTasks.map((task: any) => ({
           ...task,
-          dueDate: task.dueDate ? new Date(task.dueDate) : undefined
+          scheduledStartDate: task.scheduledStartDate ? new Date(task.scheduledStartDate) : undefined,
+          scheduledEndDate: task.scheduledEndDate ? new Date(task.scheduledEndDate) : undefined
         }));
         setTasks(tasksWithDates);
       } catch (error) {
@@ -44,7 +44,8 @@ export const TaskList = () => {
   const addTask = (newTask: {
     title: string;
     priority: "low" | "medium" | "high";
-    dueDate?: Date;
+    scheduledStartDate?: Date;
+    scheduledEndDate?: Date;
     teamInvolvement?: string;
   }) => {
     const task: Task = {
@@ -118,7 +119,7 @@ export const TaskList = () => {
   });
 
   return (
-    <div className="mx-auto max-w-2xl p-6">
+    <div className="p-6">
       <h2 className="mb-8 text-center text-2xl font-bold text-gray-900">
         Task Scheduler
       </h2>

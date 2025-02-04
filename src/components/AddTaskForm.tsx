@@ -5,7 +5,8 @@ interface AddTaskFormProps {
   onAdd: (task: {
     title: string;
     priority: "low" | "medium" | "high";
-    dueDate?: Date;
+    scheduledStartDate?: Date;
+    scheduledEndDate?: Date;
     teamInvolvement?: string;
   }) => void;
 }
@@ -13,7 +14,8 @@ interface AddTaskFormProps {
 export const AddTaskForm = ({ onAdd }: AddTaskFormProps) => {
   const [title, setTitle] = useState("");
   const [priority, setPriority] = useState<"low" | "medium" | "high">("medium");
-  const [dueDate, setDueDate] = useState("");
+  const [scheduledStartDate, setScheduledStartDate] = useState("");
+  const [scheduledEndDate, setScheduledEndDate] = useState("");
   const [teamInvolvement, setTeamInvolvement] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -23,13 +25,15 @@ export const AddTaskForm = ({ onAdd }: AddTaskFormProps) => {
     onAdd({
       title: title.trim(),
       priority,
-      dueDate: dueDate ? new Date(dueDate) : undefined,
+      scheduledStartDate: scheduledStartDate ? new Date(scheduledStartDate) : undefined,
+      scheduledEndDate: scheduledEndDate ? new Date(scheduledEndDate) : undefined,
       teamInvolvement: teamInvolvement.trim(),
     });
 
     setTitle("");
     setPriority("medium");
-    setDueDate("");
+    setScheduledStartDate("");
+    setScheduledEndDate("");
     setTeamInvolvement("");
   };
 
@@ -61,12 +65,22 @@ export const AddTaskForm = ({ onAdd }: AddTaskFormProps) => {
           <option value="medium">Medium Priority</option>
           <option value="high">High Priority</option>
         </select>
-        <input
-          type="date"
-          value={dueDate}
-          onChange={(e) => setDueDate(e.target.value)}
-          className="rounded-lg border border-gray-300 px-4 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-        />
+        <div className="flex flex-col gap-2">
+          <input
+            type="date"
+            value={scheduledStartDate}
+            onChange={(e) => setScheduledStartDate(e.target.value)}
+            className="rounded-lg border border-gray-300 px-4 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            placeholder="Scheduled Start Date"
+          />
+          <input
+            type="date"
+            value={scheduledEndDate}
+            onChange={(e) => setScheduledEndDate(e.target.value)}
+            className="rounded-lg border border-gray-300 px-4 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            placeholder="Scheduled End Date"
+          />
+        </div>
         <input
           type="text"
           value={teamInvolvement}

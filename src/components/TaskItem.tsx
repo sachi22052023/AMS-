@@ -7,7 +7,8 @@ interface TaskItemProps {
   title: string;
   completed: boolean;
   priority: "low" | "medium" | "high";
-  dueDate?: Date;
+  scheduledStartDate?: Date;
+  scheduledEndDate?: Date;
   progress: "not_started" | "in_progress" | "completed";
   actionPlanUrl?: string;
   teamInvolvement?: string;
@@ -22,7 +23,8 @@ export const TaskItem = ({
   title,
   completed,
   priority,
-  dueDate,
+  scheduledStartDate,
+  scheduledEndDate,
   progress,
   actionPlanUrl,
   teamInvolvement,
@@ -69,17 +71,26 @@ export const TaskItem = ({
             </div>
             <div>
               <span className="text-xs text-gray-500">Status:</span>
-              <span className={cn(
-                "ml-2 inline-block rounded-full px-2 py-0.5 text-xs font-medium",
-                progressColors[progress]
-              )}>
-                {progress.replace('_', ' ')}
+              <select
+                value={progress}
+                onChange={(e) => onProgressUpdate(id, e.target.value as "not_started" | "in_progress" | "completed")}
+                className="ml-2 rounded border border-gray-300 px-2 py-0.5 text-xs"
+              >
+                <option value="not_started">Not Started</option>
+                <option value="in_progress">In Progress</option>
+                <option value="completed">Completed</option>
+              </select>
+            </div>
+            <div>
+              <span className="text-xs text-gray-500">Scheduled Start:</span>
+              <span className="ml-2 text-xs">
+                {scheduledStartDate ? scheduledStartDate.toLocaleDateString() : 'Not set'}
               </span>
             </div>
             <div>
-              <span className="text-xs text-gray-500">Due Date:</span>
+              <span className="text-xs text-gray-500">Scheduled End:</span>
               <span className="ml-2 text-xs">
-                {dueDate ? dueDate.toLocaleDateString() : 'Not set'}
+                {scheduledEndDate ? scheduledEndDate.toLocaleDateString() : 'Not set'}
               </span>
             </div>
             <div>
