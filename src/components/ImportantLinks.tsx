@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 
 interface Link {
   id: string;
+  subject: string;
   title: string;
   fileUrl: string;
   comment: string;
@@ -18,6 +19,7 @@ export const ImportantLinks = () => {
     const savedLinks = localStorage.getItem("important-links");
     return savedLinks ? JSON.parse(savedLinks) : [];
   });
+  const [subject, setSubject] = useState("");
   const [comment, setComment] = useState("");
   const { isAdmin } = useAuth();
   const { toast } = useToast();
@@ -30,6 +32,7 @@ export const ImportantLinks = () => {
     
     const newLink: Link = {
       id: Math.random().toString(36).substr(2, 9),
+      subject,
       title: file.name,
       fileUrl,
       comment,
@@ -38,6 +41,7 @@ export const ImportantLinks = () => {
     const updatedLinks = [newLink, ...links];
     setLinks(updatedLinks);
     localStorage.setItem("important-links", JSON.stringify(updatedLinks));
+    setSubject("");
     setComment("");
     
     toast({
@@ -59,20 +63,30 @@ export const ImportantLinks = () => {
   };
 
   return (
-    <div className="space-y-8 max-w-3xl mx-auto">
+    <div className="w-full px-4">
       {isAdmin && (
-        <Card className="p-6 bg-white shadow-lg">
+        <Card className="p-6 bg-white shadow-lg mb-8">
           <h3 className="text-xl font-semibold mb-4">Add New Link</h3>
-          <div className="space-y-4">
+          <div className="grid grid-cols-3 gap-6">
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Subject
+              </label>
+              <Input
+                placeholder="Enter subject..."
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+              />
+            </div>
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">
                 Comment
               </label>
               <Textarea
-                placeholder="Add a comment about this link..."
+                placeholder="Add a comment..."
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                className="w-full min-h-[120px]"
+                className="min-h-[80px]"
               />
             </div>
             <div className="space-y-2">
@@ -95,37 +109,37 @@ export const ImportantLinks = () => {
             key={link.id}
             className="p-6 bg-white shadow-md hover:shadow-lg transition-shadow"
           >
-            <div className="space-y-4">
-              <div className="flex-1">
-                {link.comment && (
-                  <div className="mb-4">
-                    <h4 className="text-sm font-medium text-gray-500 mb-2">Comment</h4>
-                    <p className="text-gray-700 whitespace-pre-wrap">{link.comment}</p>
-                  </div>
-                )}
-                <div>
-                  <h4 className="text-sm font-medium text-gray-500 mb-2">File</h4>
+            <div className="grid grid-cols-3 gap-6">
+              <div>
+                <h4 className="text-sm font-medium text-gray-500 mb-2">Subject</h4>
+                <p className="text-gray-700">{link.subject}</p>
+              </div>
+              <div>
+                <h4 className="text-sm font-medium text-gray-500 mb-2">Comment</h4>
+                <p className="text-gray-700 whitespace-pre-wrap">{link.comment}</p>
+              </div>
+              <div>
+                <h4 className="text-sm font-medium text-gray-500 mb-2">Attachment</h4>
+                <div className="flex justify-between items-center">
                   <a
                     href={link.fileUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-primary hover:underline font-medium inline-flex items-center"
+                    className="text-primary hover:underline font-medium"
                   >
                     {link.title}
                   </a>
+                  {isAdmin && (
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => deleteLink(link.id)}
+                    >
+                      Delete
+                    </Button>
+                  )}
                 </div>
               </div>
-              {isAdmin && (
-                <div className="flex justify-end">
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => deleteLink(link.id)}
-                  >
-                    Delete
-                  </Button>
-                </div>
-              )}
             </div>
           </Card>
         ))}
