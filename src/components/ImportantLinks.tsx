@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
+import { Card } from "@/components/ui/card";
 
 interface Link {
   id: string;
@@ -58,55 +59,79 @@ export const ImportantLinks = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 max-w-3xl mx-auto">
       {isAdmin && (
-        <div className="space-y-4 bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-semibold">Add New Link</h3>
+        <Card className="p-6 bg-white shadow-lg">
+          <h3 className="text-xl font-semibold mb-4">Add New Link</h3>
           <div className="space-y-4">
-            <Input
-              type="file"
-              onChange={handleFileUpload}
-              className="cursor-pointer"
-            />
-            <Textarea
-              placeholder="Add a comment about this link..."
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-            />
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Comment
+              </label>
+              <Textarea
+                placeholder="Add a comment about this link..."
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                className="w-full min-h-[120px]"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Upload File
+              </label>
+              <Input
+                type="file"
+                onChange={handleFileUpload}
+                className="cursor-pointer"
+              />
+            </div>
           </div>
-        </div>
+        </Card>
       )}
       
       <div className="space-y-4">
         {links.map((link) => (
-          <div
+          <Card
             key={link.id}
-            className="bg-white p-4 rounded-lg shadow flex justify-between items-center"
+            className="p-6 bg-white shadow-md hover:shadow-lg transition-shadow"
           >
-            <div className="space-y-2">
-              <a
-                href={link.fileUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline font-medium"
-              >
-                {link.title}
-              </a>
-              {link.comment && (
-                <p className="text-gray-600 text-sm">{link.comment}</p>
+            <div className="space-y-4">
+              <div className="flex-1">
+                {link.comment && (
+                  <div className="mb-4">
+                    <h4 className="text-sm font-medium text-gray-500 mb-2">Comment</h4>
+                    <p className="text-gray-700 whitespace-pre-wrap">{link.comment}</p>
+                  </div>
+                )}
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-2">File</h4>
+                  <a
+                    href={link.fileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline font-medium inline-flex items-center"
+                  >
+                    {link.title}
+                  </a>
+                </div>
+              </div>
+              {isAdmin && (
+                <div className="flex justify-end">
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => deleteLink(link.id)}
+                  >
+                    Delete
+                  </Button>
+                </div>
               )}
             </div>
-            {isAdmin && (
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={() => deleteLink(link.id)}
-              >
-                Delete
-              </Button>
-            )}
-          </div>
+          </Card>
         ))}
+        {links.length === 0 && (
+          <p className="text-center text-gray-500">No links have been added yet.</p>
+        )}
       </div>
     </div>
   );
