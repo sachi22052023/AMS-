@@ -14,12 +14,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const login = (username: string, password: string) => {
-    if (username === 'admin' && password === 'admin') {
-      setIsAdmin(true);
+    const users = JSON.parse(localStorage.getItem("users") || "[]");
+    const user = users.find((u: any) => u.email === username);
+    
+    if (user && password === "password") { // In a real app, use proper password hashing
+      setIsAdmin(user.role === "admin");
       setIsLoggedIn(true);
       return true;
-    } else if (username === 'sandeep' && password === 'sandeep') {
-      setIsAdmin(false);
+    } else if (username === 'admin' && password === 'admin') {
+      // Fallback admin account
+      setIsAdmin(true);
       setIsLoggedIn(true);
       return true;
     }

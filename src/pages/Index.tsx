@@ -1,9 +1,12 @@
 import { TaskList } from "@/components/TaskList";
 import { LoginForm } from "@/components/LoginForm";
 import { useAuth } from "@/contexts/AuthContext";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ImportantLinks } from "@/components/ImportantLinks";
+import { UserManagement } from "@/components/UserManagement";
 
 const Index = () => {
-  const { isLoggedIn, logout } = useAuth();
+  const { isLoggedIn, logout, isAdmin } = useAuth();
 
   return (
     <div className="min-h-screen bg-sky-100">
@@ -21,7 +24,28 @@ const Index = () => {
         )}
       </div>
       <div className="container mx-auto px-4">
-        {!isLoggedIn ? <LoginForm /> : <TaskList />}
+        {!isLoggedIn ? (
+          <LoginForm />
+        ) : (
+          <Tabs defaultValue="tasks" className="w-full">
+            <TabsList>
+              <TabsTrigger value="tasks">Tasks</TabsTrigger>
+              <TabsTrigger value="important-links">Important Links</TabsTrigger>
+              {isAdmin && <TabsTrigger value="user-management">User Management</TabsTrigger>}
+            </TabsList>
+            <TabsContent value="tasks">
+              <TaskList />
+            </TabsContent>
+            <TabsContent value="important-links">
+              <ImportantLinks />
+            </TabsContent>
+            {isAdmin && (
+              <TabsContent value="user-management">
+                <UserManagement />
+              </TabsContent>
+            )}
+          </Tabs>
+        )}
       </div>
     </div>
   );
