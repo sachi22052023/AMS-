@@ -14,6 +14,7 @@ import {
 interface User {
   id: string;
   email: string;
+  password: string;
   role: "admin" | "viewer";
 }
 
@@ -23,6 +24,7 @@ export const UserManagement = () => {
     return savedUsers ? JSON.parse(savedUsers) : [];
   });
   const [newEmail, setNewEmail] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [newRole, setNewRole] = useState<"admin" | "viewer">("viewer");
   const { toast } = useToast();
 
@@ -38,9 +40,19 @@ export const UserManagement = () => {
       return;
     }
 
+    if (newPassword.length < 6) {
+      toast({
+        title: "Invalid password",
+        description: "Password must be at least 6 characters long.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const newUser: User = {
       id: Math.random().toString(36).substr(2, 9),
       email: newEmail,
+      password: newPassword,
       role: newRole,
     };
 
@@ -48,6 +60,7 @@ export const UserManagement = () => {
     setUsers(updatedUsers);
     localStorage.setItem("users", JSON.stringify(updatedUsers));
     setNewEmail("");
+    setNewPassword("");
     
     toast({
       title: "User added",
@@ -79,6 +92,17 @@ export const UserManagement = () => {
               value={newEmail}
               onChange={(e) => setNewEmail(e.target.value)}
               placeholder="user@example.com"
+              required
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="password">Password</Label>
+            <Input
+              id="password"
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="Enter password"
               required
             />
           </div>
