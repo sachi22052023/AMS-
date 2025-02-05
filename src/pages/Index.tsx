@@ -6,21 +6,24 @@ import { ImportantLinks } from "@/components/ImportantLinks";
 import { UserManagement } from "@/components/UserManagement";
 
 const Index = () => {
-  const { isLoggedIn, logout, isAdmin } = useAuth();
+  const { isLoggedIn, logout, isAdmin, currentUser } = useAuth();
 
   return (
     <div className="min-h-screen bg-sky-100">
       <div className="bg-white p-4 shadow-md mb-8 flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-900">
-          ORACLE LSGUI
+          Oracle AMS
         </h1>
         {isLoggedIn && (
-          <button
-            onClick={logout}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
-          >
-            Logout
-          </button>
+          <div className="flex items-center gap-4">
+            <span className="text-gray-600">Welcome, {currentUser}</span>
+            <button
+              onClick={logout}
+              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+            >
+              Logout
+            </button>
+          </div>
         )}
       </div>
       <div className="container mx-auto px-4">

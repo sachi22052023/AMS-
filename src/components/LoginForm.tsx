@@ -14,7 +14,7 @@ export const LoginForm = () => {
     if (success) {
       toast({
         title: "Login successful",
-        description: "Welcome back, admin!",
+        description: "Welcome back!",
       });
     } else {
       toast({
@@ -27,7 +27,7 @@ export const LoginForm = () => {
 
   return (
     <div className="max-w-sm mx-auto mt-8">
-      <h2 className="text-xl font-bold mb-4 text-center">Login to Access Task Scheduler</h2>
+      <h2 className="text-xl font-bold mb-4 text-center">Login to view Schedule Task for IAMS</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <input
