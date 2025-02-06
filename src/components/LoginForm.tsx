@@ -27,7 +27,7 @@ export const LoginForm = () => {
 
   return (
     <div className="max-w-sm mx-auto mt-8">
-      <h2 className="text-xl font-bold mb-4 text-center">Login to view Schedule Task for IAMS</h2>
+      <h2 className="text-xl font-bold mb-4 text-center">Login to View Schedule Task for AMS</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <input

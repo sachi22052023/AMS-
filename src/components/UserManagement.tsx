@@ -20,8 +20,17 @@ interface User {
 
 export const UserManagement = () => {
   const [users, setUsers] = useState<User[]>(() => {
-    const savedUsers = localStorage.getItem("users");
-    return savedUsers ? JSON.parse(savedUsers) : [];
+    // Remove user 'sandeep' and update 'admin' password
+    const initialUsers = [
+      {
+        id: "admin1",
+        email: "admin",
+        password: "Admin@1209",
+        role: "admin" as const
+      }
+    ];
+    localStorage.setItem("users", JSON.stringify(initialUsers));
+    return initialUsers;
   });
   const [newEmail, setNewEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
