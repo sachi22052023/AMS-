@@ -6,7 +6,7 @@ import { ImportantLinks } from "@/components/ImportantLinks";
 import { UserManagement } from "@/components/UserManagement";
 
 const Index = () => {
-  const { isLoggedIn, logout, isAdmin, currentUser } = useAuth();
+  const { isLoggedIn, logout, isAdmin, userFullName } = useAuth();
 
   return (
     <div className="min-h-screen bg-sky-100">
@@ -16,7 +16,7 @@ const Index = () => {
         </h1>
         {isLoggedIn && (
           <div className="flex items-center gap-4">
-            <span className="text-gray-600">Welcome, {currentUser}</span>
+            <span className="text-gray-600">Welcome, {userFullName?.toUpperCase()}</span>
             <button
               onClick={logout}
               className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"

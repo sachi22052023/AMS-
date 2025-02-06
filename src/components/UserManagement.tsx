@@ -16,17 +16,18 @@ interface User {
   email: string;
   password: string;
   role: "admin" | "viewer";
+  fullName: string;
 }
 
 export const UserManagement = () => {
   const [users, setUsers] = useState<User[]>(() => {
-    // Remove user 'sandeep' and update 'admin' password
     const initialUsers = [
       {
         id: "admin1",
         email: "admin",
         password: "Admin@1209",
-        role: "admin" as const
+        role: "admin" as const,
+        fullName: "Administrator"
       }
     ];
     localStorage.setItem("users", JSON.stringify(initialUsers));
@@ -35,6 +36,7 @@ export const UserManagement = () => {
   const [newEmail, setNewEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [newRole, setNewRole] = useState<"admin" | "viewer">("viewer");
+  const [newFullName, setNewFullName] = useState("");
   const { toast } = useToast();
 
   const handleAddUser = (e: React.FormEvent) => {
@@ -58,11 +60,21 @@ export const UserManagement = () => {
       return;
     }
 
+    if (!newFullName.trim()) {
+      toast({
+        title: "Invalid name",
+        description: "Full name is required.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const newUser: User = {
       id: Math.random().toString(36).substr(2, 9),
       email: newEmail,
       password: newPassword,
       role: newRole,
+      fullName: newFullName,
     };
 
     const updatedUsers = [...users, newUser];
@@ -70,6 +82,7 @@ export const UserManagement = () => {
     localStorage.setItem("users", JSON.stringify(updatedUsers));
     setNewEmail("");
     setNewPassword("");
+    setNewFullName("");
     
     toast({
       title: "User added",
@@ -93,6 +106,17 @@ export const UserManagement = () => {
       <form onSubmit={handleAddUser} className="space-y-4 bg-white p-6 rounded-lg shadow">
         <h3 className="text-lg font-semibold">Add New User</h3>
         <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="fullName">Full Name</Label>
+            <Input
+              id="fullName"
+              type="text"
+              value={newFullName}
+              onChange={(e) => setNewFullName(e.target.value)}
+              placeholder="Enter full name"
+              required
+            />
+          </div>
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -141,7 +165,8 @@ export const UserManagement = () => {
             className="bg-white p-4 rounded-lg shadow flex justify-between items-center"
           >
             <div>
-              <p className="font-medium">{user.email}</p>
+              <p className="font-medium">{user.fullName}</p>
+              <p className="text-sm text-gray-600">{user.email}</p>
               <p className="text-sm text-gray-600">Role: {user.role}</p>
             </div>
             <Button
