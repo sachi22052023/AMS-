@@ -4,18 +4,24 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ImportantLinks } from "@/components/ImportantLinks";
 import { UserManagement } from "@/components/UserManagement";
+import { format } from "date-fns";
 
 const Index = () => {
   const { isLoggedIn, logout, isAdmin, userFullName } = useAuth();
 
+  const currentTime = format(new Date(), "HH:mm 'IST'");
+
   return (
-    <div className="min-h-screen bg-[#1A1F2C]">
+    <div className="min-h-screen bg-[#1E2A45]"> {/* Lightened background color */}
       {isLoggedIn ? (
         <>
           <div className="bg-white/10 backdrop-blur-md p-4 shadow-md mb-8 flex justify-between items-center">
-            <h1 className="text-2xl font-bold text-white">
-              Oracle AMS
-            </h1>
+            <div className="flex items-center gap-4">
+              <h1 className="text-2xl font-bold text-white">
+                Oracle AMS
+              </h1>
+              <span className="text-gray-300">{currentTime}</span>
+            </div>
             <div className="flex items-center gap-4">
               <span className="text-gray-300">Welcome, {userFullName?.toUpperCase()}</span>
               <button
