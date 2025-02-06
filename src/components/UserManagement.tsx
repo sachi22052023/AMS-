@@ -21,6 +21,11 @@ interface User {
 
 export const UserManagement = () => {
   const [users, setUsers] = useState<User[]>(() => {
+    const storedUsers = localStorage.getItem("users");
+    if (storedUsers) {
+      return JSON.parse(storedUsers);
+    }
+    // Only set initial admin user if no users exist in localStorage
     const initialUsers = [
       {
         id: "admin1",
